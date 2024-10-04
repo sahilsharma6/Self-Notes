@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      .h-btn {
+        display: none;
+      }
+
+      .sh-btn.active .s-btn {
+        display: none;
+      }
+
+      .sh-btn.active .h-btn {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mx-auto w-2/3 my-10 container">
+      <h2>Notes</h2>
+
+      <form action="" class="border mx-auto">
+        <input
+          type="text"
+          name=""
+          id=""
+          placeholder="title"
+          class="border mt- w-full mx-auto p-2"
+        />
+        <br />
+        <br />
+        <textarea
+          name=""
+          id=""
+          placeholder="write"
+          rows="10"
+          class="border mt-2 h-auto mx- w-full p-2"
+        ></textarea>
+        <button class="bg-blue-500 text-white p-2 w-auto md:w-96 text-center">
+          Submit
+        </button>
+      </form>
+    </div>
+
+    <p
+      class="text-3xl text-center border rounded p-3 bg-blue-500 sh-btn absolute top-6 right-6 cursor-pointer"
+    >
+      <!-- Show -->
+      <i class="fa-regular fa-eye text-white s-btn text-3xl"></i>
+      <i class="fa-solid fa-eye-slash text-white h-btn text-3xl"></i>
+    </p>
+    <script>
+      const form = document.querySelector("form");
+      const title = document.querySelector("input");
+      const text = document.querySelector("textarea");
+
+      const notes = localStorage.getItem("notes")
+        ? JSON.parse(localStorage.getItem("notes"))
+        : [];
+
+      let editingNoteIndex = null;
+
+      const showNotes = () => {
+        removePreviousNote();
+        notes.forEach((note, index) => {
+          const div = document.createElement("div");
+          div.classList.add(
+            "bg-gray-300",
+            "mx-4",
+            "p-4",
+            "mt-2",
+            "relative",
+            "notes"
+          );
+          div.innerHTML = `
+          <p class="text-3xl">${note.title}</p>
+          <p class="text-gray-500">
+            ${note.text}
+          </p>
+          <div class="absolute top-1 right-1 text-black note-btns">
+            <i class="fa-solid fa-trash mx-2 cursor-pointer delete-note" data-index="${index}"></i>
+            <i class="fa-solid fa-pen mx-2 cursor-pointer edit-note" data-index="${index}"></i>
+          </div>
+          `;
+          document.querySelector(".container").appendChild(div);
+        });
+
+        attachDeleteNoteListeners();
+        attachEditNoteListeners();
+        editingNoteIndex = null;
+      };
+
+      function attachEditNoteListeners() {
+        const editNoteBtns = document.querySelectorAll(".edit-note");
+        editNoteBtns.forEach((editNoteBtn) => {
+          editNoteBtn.addEventListener("click", (e) => {
+            const index = editNoteBtn.getAttribute("data-index");
+            const note = notes[index];
+            title.value = note.title;
+            text.value = note.text;
+            editingNoteIndex = index;
+          });
+        });
+      }
+
+      const removePreviousNote = () => {
+        const note = document.querySelectorAll(".notes");
+        note.forEach((note) => {
+          note.remove();
+        });
+      };
+
+      const addNote = (title, text) => {
+        const note = {
+          title,
+          text,
+        };
+
+        if (editingNoteIndex !== null) {
+          notes[editingNoteIndex] = note;
+        } else {
+          notes.push(note);
+        }
+        localStorage.setItem("notes", JSON.stringify(notes));
+        console.log(notes);
+        form.reset();
+
+        showNotes();
+      };
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        addNote(title.value, text.value);
+      });
+
+      const removeNote = (index) => {
+        notes.splice(index, 1);
+        localStorage.setItem("notes", JSON.stringify(notes));
+
+        showNotes();
+      };
+
+      function attachDeleteNoteListeners() {
+        const deleteNoteBtn = document.querySelectorAll(".delete-note");
+        deleteNoteBtn.forEach((noteBtn) => {
+          // showNotes();
+          //   console.log(noteBtn);
+          noteBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const index = noteBtn.getAttribute("data-index");
+            removeNote(index);
+          });
+        });
+      }
+
+      //   function
+      showNotes();
+
+      const noteBtns = document.querySelector(".note-btns");
+      const shBtn = document.querySelector(".sh-btn");
+      const hBtn = document.querySelector(".h-btn");
+      const sBtn = document.querySelector(".s-btn");
+
+      // const
+
+      shBtn.addEventListener("click", () => {
+        shBtn.classList.toggle("active");
+      });
+
+      hBtn.addEventListener("click", () => {
+        localStorage.setItem("show", "true");
+        noteBtns.style.display = "none";
+      });
+      sBtn.addEventListener("click", () => {
+        localStorage.setItem("show", "false");
+        noteBtns.style.display = "block";
+      });
+
+      if (localStorage.getItem("show") === "false") {
+        shBtn.classList.toggle("active");
+      } else if (localStorage.getItem("show") === "true") {
+        noteBtns.style.display = "none";
+      }
+    </script>
+  </body>
+</html>

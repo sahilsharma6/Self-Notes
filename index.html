@@ -29,15 +29,17 @@
   </head>
   <body>
     <div class="mx-auto w-2/3 my-10 container">
-      <h2>Notes</h2>
+      <h1 class="text-3xl text-center py-3 text-[#0d162a] center-text none">
+        My Notes
+      </h1>
 
-      <form action="" class="border mx-auto">
+      <form action="" class="mx-auto">
         <input
           type="text"
           name=""
           id=""
           placeholder="title"
-          class="border mt- w-full mx-auto p-2"
+          class="border mt- w-full mx-auto p-2 rounded"
         />
         <br />
         <br />
@@ -46,9 +48,11 @@
           id=""
           placeholder="write"
           rows="10"
-          class="border mt-2 h-auto mx- w-full p-2"
+          class="border mt-2 h-auto mx- w-full p-2 rounded"
         ></textarea>
-        <button class="bg-blue-500 text-white p-2 w-auto md:w-96 text-center">
+        <button
+          class="bg-blue-500 text-white rounded p-2 w-auto md:w-96 text-center"
+        >
           Submit
         </button>
       </form>
@@ -61,6 +65,7 @@
       <i class="fa-regular fa-eye text-white s-btn text-3xl"></i>
       <i class="fa-solid fa-eye-slash text-white h-btn text-3xl"></i>
     </p>
+
     <script>
       const form = document.querySelector("form");
       const title = document.querySelector("input");
@@ -78,18 +83,18 @@
           const div = document.createElement("div");
           div.classList.add(
             "bg-gray-300",
-            "mx-4",
             "p-4",
             "mt-2",
             "relative",
-            "notes"
+            "notes",
+            "rounded"
           );
           div.innerHTML = `
           <p class="text-3xl">${note.title}</p>
           <p class="text-gray-500">
             ${note.text}
           </p>
-          <div class="absolute top-1 right-1 text-black note-btns">
+          <div class="absolute top-1 right-1 text-black note-btns ">
             <i class="fa-solid fa-trash mx-2 cursor-pointer delete-note" data-index="${index}"></i>
             <i class="fa-solid fa-pen mx-2 cursor-pointer edit-note" data-index="${index}"></i>
           </div>
@@ -148,7 +153,6 @@
       const removeNote = (index) => {
         notes.splice(index, 1);
         localStorage.setItem("notes", JSON.stringify(notes));
-
         showNotes();
       };
 
@@ -161,6 +165,7 @@
             e.preventDefault();
             const index = noteBtn.getAttribute("data-index");
             removeNote(index);
+            // showToast("error", "Note removed successfully");
           });
         });
       }
@@ -168,30 +173,41 @@
       //   function
       showNotes();
 
-      const noteBtns = document.querySelector(".note-btns");
+      const noteBtns = document.querySelectorAll(".note-btns");
       const shBtn = document.querySelector(".sh-btn");
       const hBtn = document.querySelector(".h-btn");
       const sBtn = document.querySelector(".s-btn");
-
-      // const
+      const centerText = document.querySelector(".center-text");
 
       shBtn.addEventListener("click", () => {
         shBtn.classList.toggle("active");
+        localStorage.setItem("show", shBtn.classList.contains("active"));
+        noteBtns.forEach((noteBtn) => {
+          noteBtn.classList.toggle("hidden");
+        });
       });
 
       hBtn.addEventListener("click", () => {
-        localStorage.setItem("show", "true");
-        noteBtns.style.display = "none";
+        document.body.style.backgroundColor = "white";
+        centerText.style.color = "#0d162a";
       });
       sBtn.addEventListener("click", () => {
-        localStorage.setItem("show", "false");
-        noteBtns.style.display = "block";
+        document.body.style.backgroundColor = "#0d162a";
+        centerText.style.color = "#f5f5f5";
       });
 
-      if (localStorage.getItem("show") === "false") {
+      if (localStorage.getItem("show") === "true") {
         shBtn.classList.toggle("active");
-      } else if (localStorage.getItem("show") === "true") {
-        noteBtns.style.display = "none";
+
+        noteBtns.forEach((noteBtn) => {
+          noteBtn.classList.remove("hidden");
+        });
+        document.body.style.backgroundColor = "#0d162a";
+        centerText.style.color = "#f5f5f5";
+      } else {
+        noteBtns.forEach((noteBtn) => {
+          noteBtn.classList.add("hidden");
+        });
       }
     </script>
   </body>

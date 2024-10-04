@@ -91,14 +91,14 @@
           );
           div.innerHTML = `
           <p class="text-3xl">${note.title}</p>
-          <p class="text-gray-500">
-            ${note.text}
+          <p class="text-gray-500 make-innerHtml">
           </p>
           <div class="absolute top-1 right-1 text-black note-btns ">
             <i class="fa-solid fa-trash mx-2 cursor-pointer delete-note" data-index="${index}"></i>
             <i class="fa-solid fa-pen mx-2 cursor-pointer edit-note" data-index="${index}"></i>
           </div>
           `;
+          div.querySelector(".make-innerHtml").innerHTML = note.text;
           document.querySelector(".container").appendChild(div);
         });
 
@@ -196,7 +196,7 @@
         centerText.style.color = "#f5f5f5";
       });
 
-      if (localStorage.getItem("show") === "true") {
+      if (localStorage.getItem("show") === true) {
         shBtn.classList.toggle("active");
 
         noteBtns.forEach((noteBtn) => {

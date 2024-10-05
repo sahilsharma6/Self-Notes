@@ -43,13 +43,45 @@
         />
         <br />
         <br />
+        <!-- <button
+          id="fullscreenBtn"
+          class="mt-2 p-2 bg-blue-500 text-white rounded"
+        >
+          Toggle Fullscreen
+        </button> -->
+
         <textarea
           name=""
-          id=""
+          id="myTextarea"
           placeholder="write"
           rows="10"
           class="border mt-2 h-auto mx- w-full p-2 rounded"
         ></textarea>
+        <script>
+          const textarea = document.getElementById("myTextarea");
+          // const button = document.getElementById("fullscreenBtn");
+
+          function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+              textarea.requestFullscreen().catch((err) => {
+                console.error(
+                  `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+                );
+              });
+            } else {
+              document.exitFullscreen();
+            }
+          }
+
+          // button.addEventListener("click", toggleFullscreen);
+
+          // textarea.addEventListener("dblclick", toggleFullscreen);
+          document.addEventListener("keydown", (event) => {
+            if (event.key === "f" || event.key === "F") {
+              toggleFullscreen();
+            }
+          });
+        </script>
         <button
           class="bg-blue-500 text-white rounded p-2 w-auto md:w-96 text-center"
         >
